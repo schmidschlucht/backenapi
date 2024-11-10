@@ -25,16 +25,15 @@ class User {
     }
 
     public function create(array $data): string {
-        $sql = "INSERT INTO persons (first_name, last_name,email, descr, admin)
-                VALUES (:first_name, :last_name, :email, :descr, :admin)";
+        $sql = "INSERT INTO users(user_firstname, user_firstname, user_email)
+                VALUES (:user_firstname, :user_lastname, :user_email)";
         
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->bindValue(":first_name", $data["first_name"], PDO::PARAM_STR);
-        $stmt->bindValue(":last_name", $data["last_name"], PDO::PARAM_STR);
-        $stmt->bindValue(":email", $data["email"], PDO::PARAM_STR);
-        $stmt->bindValue(":descr", $data["descr"], PDO::PARAM_STR);
-        $stmt->bindValue(":admin", (bool)$data["admin"] ?? false, PDO::PARAM_BOOL);
+        $stmt->bindValue(":user_firstname", $data["user_firstname"], PDO::PARAM_STR);
+        $stmt->bindValue(":user_lastname", $data["user_lastname"], PDO::PARAM_STR);
+        $stmt->bindValue(":user_email", $data["user_email"], PDO::PARAM_STR);
+      
 
         $stmt->execute();
 
@@ -52,18 +51,18 @@ class User {
     }
 
     public function update(array $current, array $new): int {
-        $sql = "UPDATE product
-                SET first_name = :first_name, last_name= :last_name, email = :email, descr = :descr, admin = :admin
-                WHERE person_id = :id";
+        $sql = "UPDATE users
+                SET user_firstname = :user_firstname, 
+                user_lastname= :user_lastname, 
+                user_email = :user_email
+                WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->bindValue(":first_name", $new["first_name"] ?? $current["first_name"], PDO::PARAM_STR);
-        $stmt->bindValue(":last_name", $new["last_name"] ?? $current["last_name"], PDO::PARAM_STR);
-        $stmt->bindValue(":email", $new["email"] ?? $current["email"], PDO::PARAM_STR);
-        $stmt->bindValue(":descr", $new["descr"] ?? $current["descr"], PDO::PARAM_STR);
-        $stmt->bindValue(":admin", $new["admin"] ?? $current["admin"], PDO::PARAM_BOOL);
-        $stmt->bindValue(":id", $current["person_id"], PDO::PARAM_INT);
-
+        $stmt->bindValue(":user_firstname", $new["user_firstname"] ?? $current["user_firstname"], PDO::PARAM_STR);
+        $stmt->bindValue(":user_lastname", $new["user_lastname"] ?? $current["user_lastname"], PDO::PARAM_STR);
+        $stmt->bindValue(":user_email", $new["user_email"] ?? $current["user_email"], PDO::PARAM_STR);
+        
+        
         $stmt->execute();
 
         return $stmt->rowCount();
@@ -71,7 +70,7 @@ class User {
 
     public function delete(int $id): int {
 
-        $sql = "DELETE persons WHERE person_id = :id";
+        $sql = "DELETE users WHERE user_id = :id";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
