@@ -24,6 +24,8 @@ class User {
         return $data;
     }
 
+
+
     public function create(array $data): string {
         $sql = "INSERT INTO users(user_firstname, user_firstname, user_email)
                 VALUES (:user_firstname, :user_lastname, :user_email)";
