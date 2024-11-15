@@ -2,21 +2,28 @@
 namespace Controllers;
 
 use Models\User;
-use Core\Database;
 use Core\Request;
 
 class UserController {
 
     private User $user;
-    private Database $db;
+  
 
     public function __construct() {
-        $this->db = new Database();
-        $this->user = new User($this->db);
+   
+        $this->user = new User('users');
+        
     }
    
-    public function readUsers(Request $request) {
-        echo json_encode($this->user->getAll());
+    public function readUsers(Request $request) {       
+        $res = $this->user->users(); 
+        echo json_encode($res);
+    }
+
+    public function userFromId(int $id, Request $request): void {
+        
+        
+        echo json_encode($request->getBody());
     }
 
     

@@ -29,10 +29,7 @@ final class Request
         parse_str($queryString, $queryParams);
 
         $url = '/' . str_replace([$scriptName, $baseDir, '?' . $queryString], '', $requestUri);
-        $url = str_replace('//', '/', $url);
-
-     
-
+        $url = str_replace('//', '/', $url); 
 
         return new Request($url, $requestMethod, $queryParams);
     }

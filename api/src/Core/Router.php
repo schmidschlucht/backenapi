@@ -14,7 +14,7 @@ final class Router
         $url = preg_replace('~{(.*)}~mU', '(?<$1>\S+)', $url);
         $url = sprintf('~^(%s)/?%s(%s)$~i',$url, self::SEPARATOR, $methods);
         
-        $this->routes[$url]= $action;
+        $this->routes[$url]= $action;        
        
         return $this->routes;
     }
@@ -31,8 +31,7 @@ final class Router
                 return is_int($key) === false;
             }, ARRAY_FILTER_USE_KEY);
             
-            $matches['request'] = $request;
-            
+            $matches['request'] = $request;          
             $a = $action(...$matches);
             return $a;
         }

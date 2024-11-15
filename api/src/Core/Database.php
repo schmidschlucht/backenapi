@@ -3,21 +3,70 @@
 namespace Core;
 
 use PDO;
-
 include_once('config.php');
-    
-class Database {
+class Database
+{
+    private $host = DB_HOST;
+    private $database = DB_NAME;
+    private $dbname = DB_USER;
+    private $password = DB_PASS;
+    private $conn;
 
-    public $dsn;    
+    public function connect():PDO
+    {        
+        $this->conn = null;
 
-    public function getConnection():PDO {
-        $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME;
-        return new PDO($dsn, DB_USER, DB_PASS, array(
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::ATTR_STRINGIFY_FETCHES => false,
-            ));
+        try {
+            $this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->database, 
+            $this->dbname, $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (\PDOException $e) {
+            echo 'Connection Error: ' . $e->getMessage();
+        }
+
+        return $this->conn;
     }
+
+    public function query($query, $data = []): RequestMessage
+	{
+        try {
+            $con = $this->connect();
+            $stm = $con->prepare($query);
+
+            $check = $stm->execute($data);
+            if($check)
+            {
+                $result = $stm->fetchAll(PDO::FETCH_OBJ);
+                if(is_array($result) && count($result))
+                {
+                    return RequestMessage::write("success", false,$result);
+                }
+            }
+            return RequestMessage::write("no data found!", false);
+        } catch(MySQLException $e) {
+            return RequestMessage::write("no data found!", true, [$e->errorMessage()]);
+        }
+
+	}
+
+	public function get_row($query, $data = [])
+	{
+
+		$con = $this->connect();
+		$stm = $con->prepare($query);
+
+		$check = $stm->execute($data);
+		if($check)
+		{
+			$result = $stm->fetchAll(PDO::FETCH_OBJ);
+			if(is_array($result) && count($result))
+			{
+				return $result[0];
+			}
+		}
+
+		return false;
+	}
+	
+
 }
-    
-?>

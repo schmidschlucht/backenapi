@@ -10,7 +10,7 @@ use Controllers\UserController;
 $router = new Router();
 $user = new UserController();
 
-// $request = Request::createFromGlobal();
+$request = Request::createFromGlobal();
 
 // $router->register('/', new IndexController());
 
@@ -18,8 +18,8 @@ $user = new UserController();
 // $router->register('/profile/{id}', new ProfileController(),'GET');
 // call_user_func([$obj, "mymethod"]);
 $router->register('/users', [$user, 'readUsers'], 'GET');
+$router->register('/user/{id}', [$user, 'userFromId'],'POST');
 // $router->register('/write', [$user, 'writeUser'],'POST');
-// $router->register('/user/{id}', [$user, 'userFromId'],'POST');
 
 
 return $router;
