@@ -11,7 +11,7 @@ class UserController {
 
     public function __construct() {
    
-        $this->user = new User('users');
+        $this->user = new User();
         
     }
    

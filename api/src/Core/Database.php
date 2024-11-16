@@ -27,7 +27,7 @@ class Database
         return $this->conn;
     }
 
-    public function query($query, $data = []): RequestMessage
+    public function query($query, $data = []): array | bool
 	{
         try {
             $con = $this->connect();
@@ -39,12 +39,12 @@ class Database
                 $result = $stm->fetchAll(PDO::FETCH_OBJ);
                 if(is_array($result) && count($result))
                 {
-                    return RequestMessage::write("success", false,$result);
+                    return $result;
                 }
             }
-            return RequestMessage::write("no data found!", false);
-        } catch(MySQLException $e) {
-            return RequestMessage::write("no data found!", true, [$e->errorMessage()]);
+            return false;
+        } catch(\Exception $e) {
+            throw new MySQLException("fehler beim laden der daten!");
         }
 
 	}

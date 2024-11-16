@@ -4,31 +4,55 @@ namespace Models;
 
 
 use Core\Model;
+use Core\MySQLException;
 use Core\RequestMessage;
 
 class User extends Model {    
 
-    public function __construct(string $table) {
-        $this->table = $table;
+    public function __construct() {
+        $this->table = 'users';
+        $this->allowedColumns = [
+            'user_id',
+            'user_firstname',
+            'user_lastname',
+            'user_email',
+            'updated_at',
+            'createad_at',
+        ];
     }
 
     public function users(): RequestMessage {
-        return $this->findAll();
+            try {
+                $res = $this->findAll();
+                return RequestMessage::write(
+                    "load users successfully!",
+                    false,
+                    $res
+                );
+            } catch(MySQLException $e) {
+                return RequestMessage::write(
+                    "load users successfully!",
+                    false,
+                    [$e->errorMessage()],
+                );
+            }
+        
     }
     
-    // public function createTable(): bool{
-    //     $sql = 'CREATE TABLE IF NOT EXISTS `users` (
-    //         `user_id` int(11) NOT NULL,
-    //         `user_firstname` varchar(120) NOT NULL,
-    //         `user_lastname` varchar(120) NOT NULL,
-    //         `user_email` varchar(120) NOT NULL,
-    //         `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-    //         `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-    //       )';
+    public function createTable(): bool{
+        
+        $sql = 'CREATE TABLE IF NOT EXISTS `users` (
+            `user_id` int(11) NOT NULL,
+            `user_firstname` varchar(120) NOT NULL,
+            `user_lastname` varchar(120) NOT NULL,
+            `user_email` varchar(120) NOT NULL,
+            `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+            `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+          )';
 
-    //     $stmt = $this->conn->prepare($sql);
-    //     return $stmt->execute();          
-    // }
+        $stmt = $this->query($sql);
+        return $stmt;          
+    }
 
     // public function create(array $data): string {
     //     $sql = "INSERT INTO users(user_firstname, user_firstname, user_email)
